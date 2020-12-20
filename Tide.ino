@@ -62,7 +62,7 @@ void loop() {
     client.println();
 
     // Wait for Server response
-    delay(30000);
+    delay(10000);
 
     // Parse server response to variables
     float value = min_value;
@@ -134,7 +134,12 @@ void animate_level(float level, float trend, int intensity){
   for(int i=0; i<N; i++) { 
     pixels.setPixelColor(i, pixels.Color(0, 0, intensity));
   }
+  // Set last pixel with fractional intensity
   pixels.setPixelColor(N, pixels.Color(0, 0, intensity_fraction));
+  // Turn remaining pixels off
+  for(int i=N+1; i<NUMPIXELS; i++) { 
+    pixels.setPixelColor(i, pixels.Color(0, 0, 0));
+  }
   pixels.show();
 
   // Animate trend
