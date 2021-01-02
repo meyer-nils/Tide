@@ -11,3 +11,5 @@ data.
 Circuit:
 * Arduino MKR 1000
 * 3 Adafruit NeoPixel Sticks connected to GND, 5V, and PIN 7
+
+![Tide](tide.gif)
