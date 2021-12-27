@@ -35,7 +35,7 @@ WiFiClient client;
 int status = WL_IDLE_STATUS;
 
 // set server to pull water level data from
-char server[] = "www.pegelonline.wsv.de";
+char server[] = "www.meyernils.de";
 
 // send maximum and minimum water levels to map 
 float max_value = 700.0;
@@ -44,7 +44,7 @@ float min_value = 300.0;
 
 void setup() {
   // Inititialize serial connection for debugging
-  //Serial.begin(9600);
+  // Serial.begin(9600);
 
   // Initialize NeoPixels
   pixels.begin(); 
@@ -57,9 +57,11 @@ void loop() {
   if (client.connect(server, 80) && status == WL_CONNECTED) {
 
     // Send request to Server 
-    client.println("GET /webservices/rest-api/v2/stations/KNOCK/W/currentmeasurement.json HTTP/1.1");
-    client.println("Host: www.pegelonline.wsv.de");
+    client.println("GET /pegel_knock.php HTTP/1.1");
+    client.println("Host: www.meyernils.de");
     client.println();
+
+    while (!client.available()) {}
 
     // Wait for Server response
     delay(10000);
