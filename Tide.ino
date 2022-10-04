@@ -64,7 +64,7 @@ void loop() {
     while (!client.available()) {}
 
     // Wait for Server response
-    delay(10000);
+    delay(1000);
 
     // Parse server response to variables
     float value = min_value;
@@ -82,7 +82,7 @@ void loop() {
     float level = (value-min_value)/(max_value-min_value);
    
     // Set pixels
-    animate_level(level, trend, 20);
+    animate_level(level, trend, 30, 100, 3000);
   }
   else {
     // Print red pixels
@@ -122,46 +122,49 @@ float parse_JSON(String line, String var_name){
   return trim1.toFloat();
 }
 
-void animate_level(float level, float trend, int intensity){
-  // Treat extremly high tides with a red warning color
-  int warn = 0;
-  if(level > 1.0){warn = 255;}
-
-  // Compute number of eluminated pixels and remaining intensity
-  float n = level * NUMPIXELS;
-  int N = floor(n);
-  int intensity_fraction = floor((n-float(N))*intensity);
-
-  // Set base level
-  for(int i=0; i<N; i++) { 
-    pixels.setPixelColor(i, pixels.Color(0, 0, intensity));
-  }
-  // Set last pixel with fractional intensity
-  pixels.setPixelColor(N, pixels.Color(0, 0, intensity_fraction));
-  // Turn remaining pixels off
-  for(int i=N+1; i<NUMPIXELS; i++) { 
-    pixels.setPixelColor(i, pixels.Color(0, 0, 0));
-  }
-  pixels.show();
-
-  // Animate trend
-  if (trend > 0.0){
+void animate_level(float level, float trend, int intensity, int repeat, int wait_time){
+  for (int j; j<repeat; j++){
+    // Treat extremly high tides with a red warning color
+    int warn = 0;
+    if(level > 1.0){warn = 255;}
+  
+    // Compute number of eluminated pixels and remaining intensity
+    float n = level * NUMPIXELS;
+    int N = floor(n);
+    int intensity_fraction = floor((n-float(N))*intensity);
+  
+    // Set base level
     for(int i=0; i<N; i++) { 
-      pixels.setPixelColor(i, pixels.Color(warn, 0, 2*intensity));
-      pixels.show();
-      delay(50);
       pixels.setPixelColor(i, pixels.Color(0, 0, intensity));
-      pixels.show();
     }
-  }
-  else if (trend < 0.0){
-    for(int i=N-1; i>=0; i--) { 
-      pixels.setPixelColor(i, pixels.Color(warn, 0, 2*intensity));
-      pixels.show();
-      delay(50);
-      pixels.setPixelColor(i, pixels.Color(0, 0, intensity));
-      pixels.show();
+    // Set last pixel with fractional intensity
+    pixels.setPixelColor(N, pixels.Color(0, 0, intensity_fraction));
+    // Turn remaining pixels off
+    for(int i=N+1; i<NUMPIXELS; i++) { 
+      pixels.setPixelColor(i, pixels.Color(0, 0, 0));
     }
+    pixels.show();
+  
+    // Animate trend
+    if (trend > 0.0){
+      for(int i=0; i<N; i++) { 
+        pixels.setPixelColor(i, pixels.Color(warn, 0, 2*intensity));
+        pixels.show();
+        delay(50);
+        pixels.setPixelColor(i, pixels.Color(0, 0, intensity));
+        pixels.show();
+      }
+    }
+    else if (trend < 0.0){
+      for(int i=N-1; i>=0; i--) { 
+        pixels.setPixelColor(i, pixels.Color(warn, 0, 2*intensity));
+        pixels.show();
+        delay(50);
+        pixels.setPixelColor(i, pixels.Color(0, 0, intensity));
+        pixels.show();
+      }
+    }
+    delay(wait_time);
   }
 }
 
@@ -171,7 +174,7 @@ void animate_warning(){
 
   // Animate rising red dots
   for(int i=0; i<NUMPIXELS; i++) { 
-    pixels.setPixelColor(i, pixels.Color(50, 0, 0));
+    pixels.setPixelColor(i, pixels.Color(40, 0, 0));
     pixels.show();
     delay(50);
   }  
